@@ -1,0 +1,267 @@
+/* =========================
+   THEMA – DEFAULT (DARK)
+   ========================= */
+
+body {
+  display: flex;
+  font-family: sans-serif;
+  margin: 0;
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+}
+
+a {
+  color: white;
+}
+a:hover {
+  color: #ccc;
+}
+a:visited {
+  color: #888;
+}
+
+/* =========================
+   THEMA – LIGHT MODE
+   ========================= */
+
+body.light-mode {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+body.light-mode a {
+  color: #b62025;
+}
+
+body.light-mode a:visited {
+  color: #8a181c;
+}
+
+
+/* =========================
+   THEME TOGGLE BUTTON
+   ========================= */
+
+button.theme-toggle {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: #444;
+  color: #eee;
+  padding: 8px 12px;
+  border: 1px solid #666;
+  cursor: pointer;
+  z-index: 9999;
+}
+
+body.light-mode button.theme-toggle {
+  background: #ddd;
+  color: #000;
+  border: 1px solid #aaa;
+}
+
+/* =========================
+   LAYOUT
+   ========================= */
+
+#sidebar {
+  width: 300px;       /* standaardbreedte */
+  min-width: 300px;   /* minimale breedte */
+  height: 100vh;
+  overflow-y: auto;
+  border-right: 1px solid #444;
+  padding: 1em;
+  background-color: #2b2b2b;
+  box-sizing: border-box;  /* voorkomt dat padding de breedte verkleint */
+}
+
+body.light-mode #sidebar {
+  background-color: #f3f3f3;
+  color: #000;
+  border-right: 1px solid #ddd;
+}
+
+/* A-Z navigator buttons */
+#abcNavigator .az-btn {
+  padding: 4px 6px;
+  cursor: pointer;
+  background: #444;  /* dark mode */
+  color: #fff;
+  border: 1px solid #666;
+  font-size: 0.9em;
+  margin: 1px;
+  border-radius: 3px;
+}
+
+body.light-mode #abcNavigator .az-btn {
+  background: #eaeaea;  /* light mode */
+  color: #000;
+  border: 1px solid #ccc;
+}
+
+
+#sidebar a {
+  color: white;
+  text-decoration: none;
+}
+
+body.light-mode #sidebar a {
+  color: #b62025;
+}
+
+body.light-mode #sidebar a:visited {
+  color: #8a181c;
+}
+
+#main {
+  flex-grow: 1;
+  padding: 1em;
+  overflow-y: auto;
+}
+
+body.light-mode #main {
+  background-color: #ffffff;
+}
+
+/* =========================
+   DETAIL BLOKKEN
+   ========================= */
+
+#conceptContainer {
+  margin-bottom: 2em;
+}
+
+#graph {
+ /* width: 100%; */
+  height: 500px;
+  margin: 2em 0;
+  border: 1px solid #444;
+}
+
+.graph-label {
+  fill: #fff;  /* default dark mode */
+}
+body.light-mode .graph-label {
+  fill: #000;
+}
+
+.graph-link-label {
+  fill: #ffcc00; /* dark mode */
+}
+body.light-mode .graph-link-label {
+  fill: #b62025;
+}
+
+.graph-node-main { fill: #0077cc; }
+.graph-node-alt { fill: #ff66cc; }
+.graph-node { fill: #ccc; }
+
+
+
+body.light-mode #graph {
+  border-color: #ccc;
+}
+
+#graphFilters {
+  display: flex;
+  flex-wrap: wrap;      /* als het niet past, nieuwe regel */
+  gap: 10px;            /* ruimte tussen checkboxes */
+  margin-bottom: 1em;
+}
+
+#graphFilters label {
+  display: flex;
+  align-items: center;
+  gap: 4px;             /* ruimte tussen checkbox en tekst */
+}
+
+
+/* =========================
+   TABEL
+   ========================= */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1em;
+}
+
+th,
+td {
+  padding: 8px;
+  border: 1px solid #555;
+}
+
+th {
+  background: #3a3a3a;
+  width: 20%;
+}
+
+td {
+  background: #2b2b2b;
+}
+
+body.light-mode th {
+  background-color: #eaeaea;
+  color: #000;
+  border-color: #ccc;
+}
+
+body.light-mode td {
+  background-color: #f6f6f6;
+  border-color: #ccc;
+}
+
+/* =========================
+   JSON BLOK
+   ========================= */
+
+#conceptJson {
+  background: #2b2b2b;
+  border: 1px solid #444;
+  padding: 1em;
+  white-space: pre-wrap;
+  max-height: 400px;
+  overflow: auto;
+}
+
+body.light-mode #conceptJson {
+  background: #f7f7f7;
+  border: 1px solid #ccc;
+  color: #222;
+}
+
+
+.tab-buttons {
+  display: flex;
+  margin-bottom: 1em;
+  gap: 2px;
+}
+.tab-btn {
+  flex: 1;
+  padding: 6px;
+  cursor: pointer;
+  background: #444;
+  color: white;
+  border: 1px solid #666;
+  font-size: 0.9em;
+}
+.tab-btn.active {
+  background: #b62025;
+}
+body.light-mode .tab-btn {
+  background: #ddd;
+  color: #000;
+}
+body.light-mode .tab-btn.active {
+  background: #b62025;
+  color: #fff;
+}
+
+.tab-content {
+  display: none;
+}
+.tab-content.active {
+  display: block;
+}
+

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Concept Viewer</title>
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<button id="themeToggle" class="theme-toggle">Light mode</button>
+
+<div id="sidebar">
+  <!-- Tab buttons -->
+  <div class="tab-buttons">
+    <button class="tab-btn active" data-tab="navTab">Navigeren</button>
+    <button class="tab-btn" data-tab="searchTab">Zoeken</button>
+    <button class="tab-btn" data-tab="csvTab">CSV Laden</button>
+    
+    
+  </div>
+
+  <!-- Tab contents -->
+  <div class="tab-content" id="csvTab">
+    <h3>CSV laden</h3>
+    <input type="file" id="csvInput" accept=".csv,.txt" />
+  </div>
+
+  <div class="tab-content" id="searchTab">
+    <h3>Zoeken</h3>
+    <input id="searchInput" type="text" placeholder="Zoek begrip...">
+    <ul id="searchResults"></ul>
+  </div>
+
+  <div class="tab-content active" id="navTab">
+    <div id="abcNavigator"></div>
+
+    <h3>Concepten</h3>
+    <ul id="conceptList">Nog geen CSV geladen.</ul>
+  </div>
+</div>
+
+<div id="main">
+  <!-- Main header met logo-placeholder -->
+  <div id="mainTitle">
+    <h1>
+      <span id="logoPlaceholder">[LOGO]</span> <span id="titleText">Begrippenplatform</span>
+    </h1>
+  </div>
+  <h2>Concept detail</h2>
+
+  <div id="conceptContainer">Geen CSV geladen.</div>
+
+  <h3>Grafiek</h3>
+  <div id="graphFilters">
+  <label><input type="checkbox" class="graph-filter" value="skos:altLabel" checked> AltLabel</label><br>
+  <label><input type="checkbox" class="graph-filter" value="skos:broader" checked> Broader</label><br>
+  <label><input type="checkbox" class="graph-filter" value="skos:narrower" checked> Narrower</label><br>
+  <label><input type="checkbox" class="graph-filter" value="skos:related" checked> Related</label>
+</div>
+  <div id="graph"></div>
+
+  <h3>JSON</h3>
+  <button id="copyBtn">Kopieer JSON</button>
+  <pre id="conceptJson"></pre>
+</div>
+
+<!-- Libraries -->
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
+
+<!-- App code -->
+<script src="js/csv2jsonld.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/app.js"></script>
+<script src="js/graph.js"></script>
+<script src="js/concept-detail.js"></script>
+<script src="js/concept-list.js"></script>
+<script src="js/csv-loader.js"></script>
+
+<script src="js/ui.js"></script>
+
+</body>
+</html>
