@@ -40,20 +40,21 @@ async function loadDirectoryCSV() {
   const basePath = "/begrippen/";
   const currentPath = window.location.pathname;
 
-  // Root van de viewer: geen automatische CSV laden
-  if (
-    currentPath === basePath ||
-    currentPath === `${basePath}index.html`
-  ) {
+  // Verwijder /begrippen/ en eventuele afsluitende /
+  const subPath = currentPath
+    .replace(basePath, "")
+    .replace(/\/$/, "");
+
+  // Root van de viewer: niets automatisch laden
+  if (!subPath || subPath === "index.html") {
     return false;
   }
 
-  // Bepaal directory van de huidige URL
-  const directory = currentPath.endsWith("/")
-    ? currentPath
-    : currentPath.substring(0, currentPath.lastIndexOf("/") + 1);
+  // Pak het laatste onderdeel van het pad
+  const name = subPath.split("/").pop();
 
-  const csvUrl = `${directory}begrippen.csv`;
+  // CSV staat in de root van /begrippen/
+  const csvUrl = `${basePath}${name}.csv`;
 
   try {
     const response = await fetch(csvUrl);
@@ -64,16 +65,17 @@ async function loadDirectoryCSV() {
 
     const csvText = await response.text();
 
+    // Oude handmatig geladen CSV verwijderen
+    localStorage.removeItem("savedCSV");
+
     loadCSV(csvText);
 
     console.log(`CSV automatisch geladen: ${csvUrl}`);
 
     return true;
+
   } catch (error) {
-    console.warn(
-      `Geen begrippen.csv gevonden in ${directory}`,
-      error
-    );
+    console.warn(`CSV kon niet worden geladen: ${csvUrl}`, error);
 
     return false;
   }
