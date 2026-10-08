@@ -1,12 +1,17 @@
 // Herstel eerst de oorspronkelijke nette URL
 const requestedPath = sessionStorage.getItem("requestedPath");
+
 if (requestedPath) {
-    sessionStorage.removeItem("requestedPath");
-    history.replaceState(null, "", requestedPath);
+  sessionStorage.removeItem("requestedPath");
+  history.replaceState(null, "", requestedPath);
 }
 
-function loadCSV(csvText) {
-  localStorage.setItem("savedCSV", csvText);
+
+function loadCSV(csvText, save = false) {
+  // Alleen handmatig geladen CSV bewaren
+  if (save) {
+    localStorage.setItem("savedCSV", csvText);
+  }
 
   jsonld = csvToJsonLD(csvText);
   concepts = jsonld["@graph"];
@@ -26,6 +31,20 @@ function loadCSV(csvText) {
   document.getElementById("navTab").classList.add("active");
 }
 
+
+// Viewer leegmaken
+function clearViewer() {
+  jsonld = null;
+  concepts = [];
+
+  document.getElementById("conceptList").innerHTML = "";
+  document.getElementById("conceptContainer").innerHTML = "";
+  document.getElementById("conceptJson").textContent = "";
+  document.getElementById("graph").innerHTML = "";
+  document.getElementById("abcNavigator").innerHTML = "";
+}
+
+
 // Handmatig CSV-bestand laden
 document.getElementById("csvInput").addEventListener("change", evt => {
   const file = evt.target.files[0];
@@ -35,14 +54,15 @@ document.getElementById("csvInput").addEventListener("change", evt => {
   const reader = new FileReader();
 
   reader.onload = () => {
-    loadCSV(reader.result);
+    // Handmatig geladen CSV bewaren
+    loadCSV(reader.result, true);
   };
 
   reader.readAsText(file, "UTF-8");
 });
 
 
-// Automatisch begrippen.csv laden wanneer we in een subdirectory zitten
+// Automatisch CSV laden op basis van de URI
 async function loadDirectoryCSV() {
   const basePath = "/begrippen/";
   const currentPath = window.location.pathname;
@@ -52,16 +72,20 @@ async function loadDirectoryCSV() {
     .replace(basePath, "")
     .replace(/\/$/, "");
 
-  // Root van de viewer: niets automatisch laden
+  // Root van de viewer
   if (!subPath || subPath === "index.html") {
     return false;
   }
 
-  // Pak het laatste onderdeel van het pad
-  const name = subPath.split("/").pop();
+  // Alleen één niveau toestaan:
+  // /begrippen/spoorsebegrippen/ is geldig
+  // /begrippen/iets/anders/ niet
+  if (subPath.includes("/")) {
+    clearViewer();
+    return false;
+  }
 
-  // CSV staat in de root van /begrippen/
-  const csvUrl = `${basePath}${name}.csv`;
+  const csvUrl = `${basePath}${encodeURIComponent(subPath)}.csv`;
 
   try {
     const response = await fetch(csvUrl);
@@ -75,6 +99,7 @@ async function loadDirectoryCSV() {
     // Oude handmatig geladen CSV verwijderen
     localStorage.removeItem("savedCSV");
 
+    // Automatisch geladen CSV NIET in localStorage bewaren
     loadCSV(csvText);
 
     console.log(`CSV automatisch geladen: ${csvUrl}`);
@@ -84,6 +109,12 @@ async function loadDirectoryCSV() {
   } catch (error) {
     console.warn(`CSV kon niet worden geladen: ${csvUrl}`, error);
 
+    // Belangrijk: eventueel oude data verwijderen
+    localStorage.removeItem("savedCSV");
+
+    // Viewer blijft leeg
+    clearViewer();
+
     return false;
   }
 }
@@ -91,14 +122,32 @@ async function loadDirectoryCSV() {
 
 // Initialisatie
 (async () => {
-  const loaded = await loadDirectoryCSV();
+  const basePath = "/begrippen/";
+  const currentPath = window.location.pathname;
 
-  // Alleen terugvallen op localStorage als er geen directory-CSV is geladen
-  if (!loaded) {
+  const subPath = currentPath
+    .replace(basePath, "")
+    .replace(/\/$/, "");
+
+  // -----------------------------------------
+  // ROOT: /begrippen/
+  // -----------------------------------------
+  if (!subPath || subPath === "index.html") {
+
+    // Op de root mag de laatst handmatig
+    // geladen CSV worden hersteld
     const savedCSV = localStorage.getItem("savedCSV");
 
     if (savedCSV) {
       loadCSV(savedCSV);
     }
+
+    return;
   }
-})();
+
+  // -----------------------------------------
+  // URI: /begrippen/<naam>/
+  // -----------------------------------------
+
+  // Als er een naam in de URI staat,
+  // is uitsluitend die CSV 
