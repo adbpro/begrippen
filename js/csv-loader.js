@@ -1,3 +1,10 @@
+// Herstel eerst de oorspronkelijke nette URL
+const requestedPath = sessionStorage.getItem("requestedPath");
+if (requestedPath) {
+    sessionStorage.removeItem("requestedPath");
+    history.replaceState(null, "", requestedPath);
+}
+
 function loadCSV(csvText) {
   localStorage.setItem("savedCSV", csvText);
 
