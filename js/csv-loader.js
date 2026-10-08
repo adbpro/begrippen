@@ -5,8 +5,19 @@ function loadCSV(csvText) {
   concepts = jsonld["@graph"];
 
   loadConceptList();
-}
 
+  // Schakel terug naar tab Navigeren
+  document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.classList.remove("active");
+  });
+
+  document.querySelectorAll(".tab-content").forEach(tab => {
+    tab.classList.remove("active");
+  });
+
+  document.querySelector('[data-tab="navTab"]').classList.add("active");
+  document.getElementById("navTab").classList.add("active");
+}
 
 // Handmatig CSV-bestand laden
 document.getElementById("csvInput").addEventListener("change", evt => {
