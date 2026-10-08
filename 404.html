@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Begrippen</title>
+
+  <script>
+    const basePath = "/begrippen/";
+    const path = window.location.pathname;
+
+    if (path.startsWith(basePath)) {
+
+      // Bewaar de oorspronkelijke nette URI
+      sessionStorage.setItem("requestedPath", path);
+
+      // Start de centrale applicatie
+      window.location.replace(basePath);
+
+    } else {
+      document.addEventListener("DOMContentLoaded", () => {
+        document.body.textContent = "Pagina niet gevonden.";
+      });
+    }
+  </script>
+</head>
+
+<body>
+  Begrippenlijst laden...
+</body>
+</html>
