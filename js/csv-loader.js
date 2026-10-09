@@ -7,8 +7,9 @@ if (requestedPath) {
 }
 
 
+// CSV laden in de viewer
 function loadCSV(csvText, save = false) {
-  // Alleen handmatig geladen CSV bewaren
+
   if (save) {
     localStorage.setItem("savedCSV", csvText);
   }
@@ -34,27 +35,50 @@ function loadCSV(csvText, save = false) {
 
 // Viewer leegmaken
 function clearViewer() {
+
   jsonld = null;
   concepts = [];
 
-  document.getElementById("conceptList").innerHTML = "";
-  document.getElementById("conceptContainer").innerHTML = "";
-  document.getElementById("conceptJson").textContent = "";
-  document.getElementById("graph").innerHTML = "";
-  document.getElementById("abcNavigator").innerHTML = "";
+  const conceptList = document.getElementById("conceptList");
+  const conceptContainer = document.getElementById("conceptContainer");
+  const conceptJson = document.getElementById("conceptJson");
+  const graph = document.getElementById("graph");
+  const abcNavigator = document.getElementById("abcNavigator");
+
+  if (conceptList) {
+    conceptList.innerHTML = "";
+  }
+
+  if (conceptContainer) {
+    conceptContainer.innerHTML = "";
+  }
+
+  if (conceptJson) {
+    conceptJson.textContent = "";
+  }
+
+  if (graph) {
+    graph.innerHTML = "";
+  }
+
+  if (abcNavigator) {
+    abcNavigator.innerHTML = "";
+  }
 }
 
 
 // Handmatig CSV-bestand laden
 document.getElementById("csvInput").addEventListener("change", evt => {
+
   const file = evt.target.files[0];
 
-  if (!file) return;
+  if (!file) {
+    return;
+  }
 
   const reader = new FileReader();
 
   reader.onload = () => {
-    // Handmatig geladen CSV bewaren
     loadCSV(reader.result, true);
   };
 
@@ -62,24 +86,22 @@ document.getElementById("csvInput").addEventListener("change", evt => {
 });
 
 
-// Automatisch CSV laden op basis van de URI
+// Automatisch CSV laden op basis van URL
 async function loadDirectoryCSV() {
+
   const basePath = "/begrippen/";
   const currentPath = window.location.pathname;
 
-  // Verwijder /begrippen/ en eventuele afsluitende /
   const subPath = currentPath
     .replace(basePath, "")
     .replace(/\/$/, "");
 
-  // Root van de viewer
+  // Root
   if (!subPath || subPath === "index.html") {
     return false;
   }
 
-  // Alleen één niveau toestaan:
-  // /begrippen/spoorsebegrippen/ is geldig
-  // /begrippen/iets/anders/ niet
+  // Alleen één niveau toestaan
   if (subPath.includes("/")) {
     clearViewer();
     return false;
@@ -88,31 +110,29 @@ async function loadDirectoryCSV() {
   const csvUrl = `${basePath}${encodeURIComponent(subPath)}.csv`;
 
   try {
+
     const response = await fetch(csvUrl);
 
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
+      clearViewer();
+      return false;
     }
 
     const csvText = await response.text();
 
-    // Oude handmatig geladen CSV verwijderen
     localStorage.removeItem("savedCSV");
 
-    // Automatisch geladen CSV NIET in localStorage bewaren
-    loadCSV(csvText);
+    loadCSV(csvText, false);
 
     console.log(`CSV automatisch geladen: ${csvUrl}`);
 
     return true;
 
   } catch (error) {
+
     console.warn(`CSV kon niet worden geladen: ${csvUrl}`, error);
 
-    // Belangrijk: eventueel oude data verwijderen
     localStorage.removeItem("savedCSV");
-
-    // Viewer blijft leeg
     clearViewer();
 
     return false;
@@ -122,6 +142,7 @@ async function loadDirectoryCSV() {
 
 // Initialisatie
 (async () => {
+
   const basePath = "/begrippen/";
   const currentPath = window.location.pathname;
 
@@ -129,13 +150,9 @@ async function loadDirectoryCSV() {
     .replace(basePath, "")
     .replace(/\/$/, "");
 
-  // -----------------------------------------
   // ROOT: /begrippen/
-  // -----------------------------------------
   if (!subPath || subPath === "index.html") {
 
-    // Op de root mag de laatst handmatig
-    // geladen CSV worden hersteld
     const savedCSV = localStorage.getItem("savedCSV");
 
     if (savedCSV) {
@@ -145,9 +162,7 @@ async function loadDirectoryCSV() {
     return;
   }
 
-  // -----------------------------------------
   // URI: /begrippen/<naam>/
-  // -----------------------------------------
+  await loadDirectoryCSV();
 
-  // Als er een naam in de URI staat,
-  // is uitsluitend die CSV 
+})();
